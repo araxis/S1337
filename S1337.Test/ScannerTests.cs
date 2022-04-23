@@ -16,16 +16,16 @@ public class ScannerTests
     public async Task ScanMethodMustFindAnyHrefTagUrlInTheSpecifiedUrl()
     {
         var url = "http://www.test1.com";
-        var content1 = @"<a href=""http://www.a.com"" ></a>
-            < a href = ""http://www.b.com"" ></a>
-            < a href = ""https://www.c.com"" ></a>
-            < a href = ""http://www.d.com""></a>
-            < a href = ""http://www.test2.com""></a>";
+        var content1 = @"<a href=""http://www.test1.com/a"" ></a>
+            <a href=""http://www.test1.com/a.jpg"" ></a>
+            <a href=""https://www.c.com"" ></a>
+            <a href=""http://www.d.com""></a>
+            <a href=""http://www.test2.com""></a>";
 
         var content2 = @"
             <a href=""http://www.e.com"" ></a>
-            < a href = ""http://www.f.com"" ></a 
-            < a href = ""https://www.g.comc"" ></a>";
+            <a href=""http://www.test1.com/#a"" ></a 
+            <a href=""https://www.g.com"" ></a>";
 
         var handler = new Mock<HttpMessageHandler>();
         var client = handler.CreateClient();
@@ -37,8 +37,8 @@ public class ScannerTests
 
         var result1 = new List<string>
         {
-            "http://www.a.com",
-            "http://www.b.com",
+            "http://www.test1.com/a",
+            "http://www.test1.com/a.jpg",
             "https://www.c.com",
             "http://www.d.com",
             "http://www.test2.com"
@@ -46,8 +46,8 @@ public class ScannerTests
         var result2 = new List<string>
         {
             "http://www.e.com",
-            "http://www.f.com",
-            "https://www.g.comc"
+            "http://www.test1.com/#a",
+            "https://www.g.com"
         };
         var mockUrlFinder = new Mock<IUrlFinder>();
         mockUrlFinder.Setup(f => f.FindUrls(content1)).Returns(result1);
@@ -61,10 +61,10 @@ public class ScannerTests
         {
             result.Add(u);
         }
-        var x = result;
+      
         result.Should()
             .NotBeEmpty()
-            .And.HaveCount(9);
+            .And.HaveCount(3);
 
     }
 }
