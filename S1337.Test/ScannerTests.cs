@@ -17,15 +17,15 @@ public class ScannerTests
     {
         var url = "http://www.test1.com";
         var content1 = @"<a href=""http://www.a.com"" ></a>
-            < a href = ""http://www.b.com"" ></ a >
-            < a href = ""https://www.c.com"" ></ a >
+            < a href = ""http://www.b.com"" ></a>
+            < a href = ""https://www.c.com"" ></a>
             < a href = ""http://www.d.com""></a>
             < a href = ""http://www.test2.com""></a>";
 
         var content2 = @"
             <a href=""http://www.e.com"" ></a>
-            < a href = ""http://www.f.com"" ></ a >
-            < a href = ""https://www.g.comc"" ></ a >";
+            < a href = ""http://www.f.com"" ></a 
+            < a href = ""https://www.g.comc"" ></a>";
 
         var handler = new Mock<HttpMessageHandler>();
         var client = handler.CreateClient();
@@ -53,7 +53,9 @@ public class ScannerTests
         mockUrlFinder.Setup(f => f.FindUrls(content1)).Returns(result1);
         mockUrlFinder.Setup(f => f.FindUrls(content2)).Returns(result2);
 
-        var scanner = new Scanner(mockUrlFinder.Object, client);
+        var requestUriBuilder = new RequestUriBuilder();
+
+        var scanner = new Scanner(mockUrlFinder.Object, client,requestUriBuilder);
         var result = new List<ScanResult>();
         await foreach (var u in scanner.Scan(url))
         {
