@@ -6,14 +6,19 @@ public class RequestUriBuilder : IRequestUriBuilder
 {
     public Uri Build(string rawUrl, string domain)
     {
+
         var url = rawUrl.Trim('/');
         if (url.StartsWith("www.")) url = $"http://{url}";
-        var isRelative = Uri.IsWellFormedUriString(url, UriKind.Relative);
+        var isRelative = Uri.IsWellFormedUriString(url, UriKind.Relative) || url.StartsWith("#");
         if (!isRelative) return new Uri(url);
         var builder = new UriBuilder(domain)
         {
             Path = url
         };
         return builder.Uri;
+
+
+
+
     }
 }
