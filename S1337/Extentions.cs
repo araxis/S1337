@@ -1,4 +1,8 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.IO.Abstractions;
+using System.Runtime.CompilerServices;
+using Microsoft.Extensions.DependencyInjection;
+using S1337.Core;
+using S1337.Services;
 
 namespace S1337;
 public record SaveState(double Copied, double Total);
@@ -29,4 +33,28 @@ public static class Extensions
    
 
     }
+
+    public static IServiceCollection AddAppServices(this IServiceCollection services)
+    {
+        services.AddSingleton<HttpClient>();
+        services.AddSingleton<IFileSystem, FileSystem>();
+        services.AddSingleton<IUrlFinder, UrlFinder>();
+        services.AddTransient<IScanner, Scanner>();
+        services.AddSingleton<IFilePathResolver, FilePathResolver>();
+        services.AddTransient<IRequestUriBuilder, RequestUriBuilder>();
+        services.AddSingleton<IUrlDownloader, UrlDownloader>();
+        return services;
+    }
+
+    public static IScanner Scanner(this IServiceProvider provider) => provider.GetRequiredService<IScanner>();
+    public static IUrlDownloader UrlDownloader(this IServiceProvider provider) => provider.GetRequiredService<IUrlDownloader>();
+
+    public static bool IsDirectory(this string path)
+    {
+        var fileExt = Path.GetExtension(path);
+        return string.IsNullOrWhiteSpace(fileExt);
+  
+       
+    }
+   
 }
