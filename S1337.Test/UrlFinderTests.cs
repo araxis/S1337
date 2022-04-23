@@ -11,10 +11,10 @@ public class UrlFinderTests
     {
 
         var content = @"<a href=""www.example.com/page.php?id=xxxx&name=yyyy"" ></a>
-            < a href = ""http://www.example.com/page.php?id=xxxx&name=yyyy"" ></ a >
-            < a href = ""https://www.example.com/page.php?id=xxxx&name=yyyy"" ></ a >
-            < a href = ""www.example.com/page.php/404""></a>
-            < a href = ""images/site/all""></a>";
+            <a href=""http://www.example.com/page.php?id=xxxx&name=yyyy"" ></a>
+            <a href=""https://www.example.com/page.php?id=xxxx&name=yyyy"" ></a>
+            <a href=""www.example.com/page.php/404""></a>
+            <a href=""images/site/all""></a>";
 
 
         var finder = new UrlFinder();
