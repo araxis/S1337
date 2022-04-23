@@ -15,6 +15,7 @@ public class FilePathResolverTests
     [InlineData("http://1337.tech/images/company", @"D:\site", "", @"D:\site\images\company")]
     public void ResolvePathMethodMustReturnTheRelatedOnDiskPath(string url, string baseFolder, string? mimeType,string expected)
     {
+
         var resolver = new FilePathResolver();
         var result = resolver.ResolvePath(url, baseFolder, mimeType);
         result.Should().Be(expected);
