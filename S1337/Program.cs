@@ -28,7 +28,7 @@ var downloadLinks = new List<ScanResult>();
 var scanner = serviceProvider.Scanner();
 await AnsiConsole.Status().StartAsync("[yellow]Scanning[/]", async ctx =>
 {
-    await foreach (var item in scanner.Scan("http://1337.tech"))
+    await foreach (var item in scanner.Scan(url))
     {
         downloadLinks.Add(item);
         WriteScanResult(item);
