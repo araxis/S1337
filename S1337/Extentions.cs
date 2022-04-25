@@ -41,7 +41,6 @@ public static class Extensions
         services.AddSingleton<IUrlFinder, UrlFinder>();
         services.AddTransient<IScanner, Scanner>();
         services.AddSingleton<IFilePathResolver, FilePathResolver>();
-        services.AddTransient<IRequestUriBuilder, RequestUriBuilder>();
         services.AddSingleton<IUrlDownloader, UrlDownloader>();
         return services;
     }
