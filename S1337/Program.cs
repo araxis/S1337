@@ -9,8 +9,7 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 
 var builder = ConsoleApp.CreateBuilder(args);
-builder.ConfigureServices((ctx, services) =>
-{
+builder.ConfigureServices((ctx, services) => {
     services.AddAppServices();
 
 }).ConfigureLogging(ctx =>
