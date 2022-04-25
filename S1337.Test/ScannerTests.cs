@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.Contrib.HttpClient;
 using S1337.Core;
@@ -35,33 +38,30 @@ public class ScannerTests
         handler.SetupRequest(HttpMethod.Get, "http://www.test2.com")
             .ReturnsResponse(content2, "text/html");
 
-        var result1 = new List<string>
+         async IAsyncEnumerable<string> Result1()
         {
-            "http://www.test1.com/a",
-            "http://www.test1.com/a.jpg",
-            "https://www.c.com",
-            "http://www.d.com",
-            "http://www.test2.com"
+            yield return "http://www.test1.com/a";
+           yield return "http://www.test1.com/a.jpg";
+           yield return "https://www.c.com";
+           yield return "http://www.d.com";
+           yield return "http://www.test2.com";
         };
-        var result2 = new List<string>
-        {
-            "http://www.e.com",
-            "http://www.test1.com/#a",
-            "https://www.g.com"
-        };
+
+
+         async IAsyncEnumerable<string> Result2()
+         {
+            yield return "http://www.e.com";
+            yield return "http://www.test1.com/#a";
+            yield return "https://www.g.com";
+         };
         var mockUrlFinder = new Mock<IUrlFinder>();
-        mockUrlFinder.Setup(f => f.FindUrls(content1)).Returns(result1);
-        mockUrlFinder.Setup(f => f.FindUrls(content2)).Returns(result2);
+        mockUrlFinder.Setup( f => f.FindUrls(content1,url))
+            .Returns(Result1);
+        mockUrlFinder.Setup(f => f.FindUrls(content2,url)).Returns(Result2);
+        var moqLogger = new Mock<ILogger<Scanner>>();
+        var scanner = new Scanner(mockUrlFinder.Object, client,moqLogger.Object);
+        var result = await scanner.Scan(url).ToListAsync();
 
-        var requestUriBuilder = new RequestUriBuilder();
-
-        var scanner = new Scanner(mockUrlFinder.Object, client,requestUriBuilder);
-        var result = new List<ScanResult>();
-        await foreach (var u in scanner.Scan(url))
-        {
-            result.Add(u);
-        }
-      
         result.Should()
             .NotBeEmpty()
             .And.HaveCount(3);

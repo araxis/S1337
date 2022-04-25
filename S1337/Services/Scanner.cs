@@ -1,4 +1,5 @@
-﻿using S1337.Core;
+﻿using Microsoft.Extensions.Logging;
+using S1337.Core;
 
 namespace S1337.Services;
 
@@ -6,26 +7,28 @@ public class Scanner:IScanner
 {
     private readonly IUrlFinder _urlFinder;
     private readonly HttpClient _client;
-    private readonly IRequestUriBuilder _requestUriBuilder;
+    private readonly ILogger<Scanner> _logger;
     private readonly List<string> _alreadyScanned=new();
-    private string _domain="";
-    public Scanner(IUrlFinder urlFinder, HttpClient client, IRequestUriBuilder requestUriBuilder)
+    private Uri? _domain;
+    public Scanner(IUrlFinder urlFinder, HttpClient client, ILogger<Scanner> logger)
     {
         _urlFinder = urlFinder;
         _client = client;
-        _requestUriBuilder = requestUriBuilder;
+        _logger = logger;
     }
 
 
 
     public async IAsyncEnumerable<ScanResult> Scan(string url)
     {
+        var uri = new Uri(url);
         //fetch domain from first request
-        if (string.IsNullOrWhiteSpace(this._domain)) this._domain = new Uri(url).Host;
-        var uri = _requestUriBuilder.Build(url, _domain);
+        _domain ??= uri;
+
+      
         //reject other domain url
         //It is better if this logic moves out of this class
-        if (uri.Host != _domain) yield break;
+        if (uri.Host != _domain.Host) yield break;
 
         var request = uri.AbsoluteUri;
         if (_alreadyScanned.Contains(request)) yield break;
@@ -56,6 +59,7 @@ public class Scanner:IScanner
             //bad block of code
             //the exception must be logged
             error=true;
+            _logger.LogError("Downloading error:{Elapsed}",e.Message);
           
         }
 
@@ -66,8 +70,7 @@ public class Scanner:IScanner
         else
         {
             yield return new ScanResult(request, ScanState.Success);
-            var scannedUrls = _urlFinder.FindUrls(content);
-            foreach (var scannedUrl in scannedUrls.Distinct())
+            await foreach (var scannedUrl in _urlFinder.FindUrls(content,_domain.ToSD()))
             {
                 await foreach (var s in Scan(scannedUrl))
                 {
