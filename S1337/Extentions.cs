@@ -56,5 +56,13 @@ public static class Extensions
   
        
     }
-   
+
+    //to SCHEME + DOMAIN 😎😎😎😎😎
+    public static string ToSD(this Uri uri)
+    {
+        return $"{uri.Scheme}://{uri.Authority}";
+
+
+    }
+
 }
