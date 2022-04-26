@@ -8,9 +8,9 @@ public class DownloadCommand:ConsoleAppBase
 {
     private readonly IScanner _scanner;
     private readonly IUrlDownloader _downloader;
-    private readonly ILogger _logger;
+    private readonly ILogger<DownloadCommand> _logger;
     readonly List<ScanResult> _downloadLinks = new();
-    public DownloadCommand(IScanner scanner, IUrlDownloader downloader, ILogger logger)
+    public DownloadCommand(IScanner scanner, IUrlDownloader downloader, ILogger<DownloadCommand> logger)
     {
         _scanner = scanner;
         _downloader = downloader;
@@ -19,31 +19,29 @@ public class DownloadCommand:ConsoleAppBase
 
 
 
+    [Command("Download")]
     public async Task Execute([Option("f", "folder path")] string path,
         [Option("u", "address of site")] string url="http://1337.tech")
     {
+        if (!path.IsDirectory())
+        {
+            _logger.LogError("Wrong Path{Path}",path);
+            return;
+        }
         _logger.LogInformation("start executing");
         AnsiConsole.Write(new FigletText("1337.tech").Centered().Color(Color.Green));
         AnsiConsole.Write(new FigletText("Araxis").Centered().Color(Color.Red));
         await Scan(url);
 
 
-        await Download();
+        await Download(path);
     }
 
-    private async Task Download()
+    private async Task Download(string path)
     {
 
-        var download = AnsiConsole.Confirm("Download Site?");
-        if (download)
-        {
-            var path = AnsiConsole.Ask<string>("enter save folder [green]path[/].");
-            while (!path.IsDirectory())
-            {
-                path = AnsiConsole.Ask<string>("enter save folder [green]path[/].");
-            }
 
-            await AnsiConsole.Progress().AutoClear(false)
+        await AnsiConsole.Progress().AutoClear(false)
                 .Columns(new TaskDescriptionColumn(), new ProgressBarColumn(), new PercentageColumn(), new SpinnerColumn())
                 .StartAsync(async ctx =>
                 {
@@ -58,7 +56,7 @@ public class DownloadCommand:ConsoleAppBase
                         }
                     }
                 });
-        }
+      
     }
 
     private Task Scan(string url)
