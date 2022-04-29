@@ -16,7 +16,7 @@ public class ScanCommand:ConsoleAppBase
     }
 
     [Command("Scan")]
-    public async Task Execute(string url,string filePath="")
+    public async Task Execute(string url="http://1337.tech",string filePath="")
     {
         await AnsiConsole.Status().StartAsync("[yellow]Scanning[/]", async ctx =>
         {

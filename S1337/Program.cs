@@ -24,4 +24,8 @@ var app = builder.Build();
 app.AddCommands<AppRootCommand>();
 app.AddCommands<DownloadCommand>();
 app.AddCommands<ScanCommand>();
+Console.CancelKeyPress += (_, e) =>
+{
+    Environment.Exit(0);
+};
 await app.RunAsync();
