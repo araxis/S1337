@@ -12,9 +12,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="AngleSharp" Version="0.16.1" />
+		<PackageReference Include="ConsoleAppFramework" Version="4.0.6" />
 		<PackageReference Include="MediaTypeMap.Core" Version="2.3.3" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
-		<PackageReference Include="System.IO.Abstractions" Version="16.1.25" />
+		<PackageReference Include="Serilog.Extensions.Hosting" Version="4.2.0" />
+		<PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+		<PackageReference Include="System.IO.Abstractions" Version="16.1.26" />
 		<PackageReference Include="Spectre.Console" Version="0.44.0" />
 	</ItemGroup>
 

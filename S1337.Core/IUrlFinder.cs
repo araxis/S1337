@@ -2,5 +2,6 @@
 
 public interface IUrlFinder
 {
-    IEnumerable<string> FindUrls(string content);
+    IAsyncEnumerable<string> FindUrls(string content,string baseUrl);
+   
 }

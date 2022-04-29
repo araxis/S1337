@@ -41,7 +41,6 @@ public static class Extensions
         services.AddSingleton<IUrlFinder, UrlFinder>();
         services.AddTransient<IScanner, Scanner>();
         services.AddSingleton<IFilePathResolver, FilePathResolver>();
-        services.AddTransient<IRequestUriBuilder, RequestUriBuilder>();
         services.AddSingleton<IUrlDownloader, UrlDownloader>();
         return services;
     }
@@ -56,5 +55,13 @@ public static class Extensions
   
        
     }
-   
+
+    //to SCHEME + DOMAIN 😎😎😎😎😎
+    public static string ToSD(this Uri uri)
+    {
+        return $"{uri.Scheme}://{uri.Authority}";
+
+
+    }
+
 }

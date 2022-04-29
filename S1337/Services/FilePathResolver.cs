@@ -4,22 +4,22 @@ namespace S1337.Services;
 
 public class FilePathResolver : IFilePathResolver
 {
-    public string ResolvePath(string url,string baseFolder,string? mimeType)
+    public string ResolvePath(string url, string baseFolder, string? mimeType)
     {
-        var baseDirectory =new DirectoryInfo(baseFolder);
-        var uri=new Uri(url);
+        var baseDirectory = new DirectoryInfo(baseFolder);
+        var uri = new Uri(url);
         var path = uri.LocalPath;
         if (path == "/") return GetFullPath(Combine(baseDirectory.FullName, "index.html"));
         path = path.Trim('/');
         if (IsFileUri(uri))
         {
-            return Path.GetFullPath(Combine(baseDirectory.FullName, path));
+            return GetFullPath(Combine(baseDirectory.FullName, path));
         }
-       
-        var extension = MimeTypes.MimeTypeMap.GetExtension(@mimeType,false);
-        if (string.IsNullOrWhiteSpace(extension)) return GetFullPath(Combine(baseDirectory.FullName, path));
-        return Path.GetFullPath(Combine(baseDirectory.FullName, $"{path}{extension}"));
 
+        var extension = MimeTypes.MimeTypeMap.GetExtension(@mimeType, false);
+        return GetFullPath(string.IsNullOrWhiteSpace(extension) 
+            ? Combine(baseDirectory.FullName, path) 
+            : Combine(baseDirectory.FullName, $"{path}{extension}"));
     }
 
     private bool IsFileUri(Uri uri)
@@ -28,5 +28,5 @@ public class FilePathResolver : IFilePathResolver
         return !string.IsNullOrWhiteSpace(fileInfo.Extension);
     }
 
- 
+
 }
