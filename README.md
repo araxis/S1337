@@ -29,9 +29,9 @@ dotnet run
 
 ## Roadmap
 
- [x] Improve Scanning
- [x] Improve Error handling
- [x] Add logging
- [x] Cli
+- [x] Improve Scanning
+- [x] Improve Error handling
+- [x] Add logging
+- [x] Cli
 - Batch Download
 
