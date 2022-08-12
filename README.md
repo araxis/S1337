@@ -33,5 +33,5 @@ dotnet run
 - [x] Improve Error handling
 - [x] Add logging
 - [x] Cli
-- Batch Download
+- [] Batch Download
 
